@@ -1,0 +1,25 @@
+# Local environments, caches, configuration, and OS metadata
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.env
+.env.*
+!.env.example
+.sesskey
+.DS_Store
+._*
+Thumbs.db
+build/
+dist/
+*.egg-info/
+# Runtime backups and logs
+backups/
+*.log
