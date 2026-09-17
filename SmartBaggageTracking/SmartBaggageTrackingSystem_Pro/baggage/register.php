@@ -43,7 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_baggage'])) 
         }
         
         // الحصول على معلومات الرحلة
-        $flight = $pdo->query("SELECT flight_number FROM flights WHERE id = $flightId")->fetch();
+        $stmt = $pdo->prepare("SELECT flight_number FROM flights WHERE id = ?");
+        $stmt->execute([$flightId]);
+        $flight = $stmt->fetch();
         if (!$flight) {
             throw new Exception('الرحلة غير موجودة');
         }
@@ -52,7 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_baggage'])) 
         $baggageCode = generateBaggageCode($flight['flight_number']);
         
         // حساب الرسوم الزائدة
-        $baggageType = $pdo->query("SELECT * FROM baggage_types WHERE id = $baggageTypeId")->fetch();
+        $stmt = $pdo->prepare("SELECT * FROM baggage_types WHERE id = ?");
+        $stmt->execute([$baggageTypeId]);
+        $baggageType = $stmt->fetch();
         $excessFee = calculateExcessFee($weight, $baggageType['type_code']);
         $totalFee = $baggageType['fee_per_kg'] + $excessFee;
         
@@ -89,7 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_baggage'])) 
         $stmt->execute([$baggageId, $locationId, $auth->getUserId()]);
         
         // إرسال إشعار للمسافر
-        $passenger = $pdo->query("SELECT * FROM users WHERE id = $passengerId")->fetch();
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$passengerId]);
+        $passenger = $stmt->fetch();
         sendNotification(
             $passengerId,
             'تم تسجيل أمتعتك',
