@@ -116,4 +116,46 @@ function getUserRoleText($role) {
 function getStatusText($status) {
     return getBaggageStatusText($status);
 }
+
+function getCheckInLocationId($pdo) {
+    try {
+        $stmt = $pdo->prepare(
+            "SELECT id FROM locations
+             WHERE location_type = 'checkin_counter' AND status = 'active'
+             ORDER BY id
+             LIMIT 1"
+        );
+        $stmt->execute();
+        $location = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($location) {
+            return $location['id'];
+        }
+
+        $stmt = $pdo->prepare("SELECT id FROM locations WHERE location_code = ? LIMIT 1");
+        $stmt->execute(['CHK-001']);
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing) {
+            return $existing['id'];
+        }
+
+        $stmt = $pdo->prepare("SELECT id FROM terminals ORDER BY id LIMIT 1");
+        $stmt->execute();
+        $terminal = $stmt->fetch(PDO::FETCH_ASSOC);
+        $terminalId = $terminal ? $terminal['id'] : null;
+
+        $stmt = $pdo->prepare(
+            "INSERT INTO locations
+             (location_code, location_name, location_type, terminal_id, status)
+             VALUES (?, ?, 'checkin_counter', ?, 'active')"
+        );
+        $stmt->execute(['CHK-001', 'Check-in Counter 1', $terminalId]);
+
+        return $pdo->lastInsertId();
+    } catch (PDOException $e) {
+        error_log('Error resolving check-in location: ' . $e->getMessage());
+        return null;
+    }
+}
 ?>
