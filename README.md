@@ -1,36 +1,70 @@
-# Smart Baggage Tracking — PHP Source Snapshot
+# Smart Baggage Tracking System
 
-PHP pages for baggage registration, search, status/tracking, reporting, and administration. Source includes role checks through an `Auth` class and database access through PDO.
+A PHP/MySQL web application for airport baggage operations. The project includes passenger, staff, and administration workflows for baggage registration, status updates, tracking history, reporting, flight information, and role-based access.
 
-## Current completeness
+## Project structure
 
-Source lives under `SmartBaggageTracking/SmartBaggageTrackingSystem_Pro/`. Required `includes/config.php`, `includes/database.php`, `includes/auth.php`, and `includes/functions.php` are absent. No database schema, authentication implementation, or complete entry point is supplied.
+The main source lives under:
 
-A fresh clone cannot run as a complete system. No fictional setup command or schema is provided.
+`SmartBaggageTracking/SmartBaggageTrackingSystem_Pro/`
 
-## Source map
+Key components include:
 
-- `baggage/`: registration, reports, search, status, tracking.
-- `admin/`: dashboard, analytics, settings/users, backups.
-- `admin/analytics/`, `admin/backup/`, `admin/audit/`: additional variants.
-- `blueprint_sync_log.txt`: retained synchronization artifact pending review.
+- `baggage/` — baggage registration, search, status, reports, and tracking.
+- `admin/` — administration dashboard, analytics, settings, users, audit, and backup pages.
+- `includes/` — configuration, PDO database access, authentication, shared helpers, staff configuration, validation, and role protection.
+- `includes/security/role_guard.php` — centralized role/page access rules.
+- `schema.sql` — the recovered MySQL schema and initial sample data from the original project archive.
+- `check_runtime.php` — read-only prerequisite checker.
 
-## Required next steps
+## Recovered source
 
-1. Recover original dependencies and a MySQL-compatible schema from the complete project.
-2. Select canonical administration variants before moving files.
-3. Replace request-value SQL interpolation with validated parameters, including flight/type lookups in `baggage/register.php`.
-4. Review CSRF, authorization, backup access, and destructive admin actions once authentication source is available.
-5. Add local setup, PHP linting, role-based integration tests, and a demo with non-sensitive data.
+The original project archive was recovered and the core files that were previously missing from this repository were restored, including:
 
-## Portfolio status
+- `includes/config.php`
+- `includes/database.php`
+- `includes/auth.php`
+- `includes/functions.php`
+- `includes/security/role_guard.php`
+- `includes/config_staff.php`
+- `includes/security.php`
+- `includes/validation.php`
+- `includes/logout.php`
+- `schema.sql`
 
-Restore complete source before pinning. Keep this snapshot or consider making it private until reproducibility is established; do not delete the only source. No visibility change or bulk deletion was performed.
+The restored configuration contains local development defaults only; database and SMTP passwords are blank.
 
-See [review notes](docs/REVIEW.md). Confirm authorship and licensing before adding a license.
+## Local requirements
 
-## Runtime repair — 2026-09-14
+- PHP with PDO and `pdo_mysql`
+- MySQL/MariaDB
+- A local web server such as Apache/XAMPP or PHP's development server
 
-Run `php check_runtime.php` from the repository root for a read-only prerequisite check. It exits nonzero when source files or PDO/MySQL support are missing. PHP include paths now resolve relative to each page (`__DIR__`) rather than the process working directory.
+Run the repository checker from the repository root:
 
-All 14 PHP files (13 original pages plus the checker) passed PHP 8.4.25 syntax lint. With PDO/MySQL enabled, the checker reports missing `includes/config.php`, `database.php`, `auth.php`, `functions.php`, and `security/role_guard.php`. The database schema is also absent. These were not fabricated; login, registration, tracking and administration remain blocked until original source and schema are recovered. Syntax lint does not establish a working system.
+```bash
+php check_runtime.php
+```
+
+The checker verifies the core source files and PHP PDO/MySQL extensions. A successful prerequisite check does **not** by itself prove that every page, database query, or role workflow works end-to-end.
+
+## Database
+
+`schema.sql` contains the original recovered MySQL-compatible schema, relationships, indexes, sample records, and baggage-status trigger. Review sample data before using it outside a local development environment.
+
+## Current validation status
+
+The recovered PHP include files pass PHP syntax lint. In the current audit environment, the remaining environment-level blocker is the missing `pdo_mysql` PHP extension, so a full MySQL integration test could not be completed there.
+
+Further validation should cover:
+
+1. Schema import into a clean MySQL/MariaDB instance.
+2. Passenger registration and login.
+3. Staff baggage registration/search/status updates.
+4. Passenger tracking/history views.
+5. Admin role restrictions and destructive actions.
+6. CSRF/session/security review before any public deployment.
+
+## Portfolio note
+
+This repository represents a university/co-op web-system project and should be presented as a prototype, not as a production airport system. The restored source improves reproducibility, while full end-to-end deployment validation remains future work.
