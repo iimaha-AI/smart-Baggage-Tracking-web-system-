@@ -1,70 +1,81 @@
 # Smart Baggage Tracking System
 
-A PHP/MySQL web application for airport baggage operations. The project includes passenger, staff, and administration workflows for baggage registration, status updates, tracking history, reporting, flight information, and role-based access.
+A PHP/MySQL airport baggage-management prototype with separate passenger, staff, supervisor, airline-management and administration workflows.
+
+## Main features
+
+- Passenger registration/login, baggage tracking, flight information and travel history
+- Staff baggage registration, search, tracking updates and operational reports
+- Flight status and management pages
+- Administration dashboards, analytics, users, settings, audit and backup pages
+- Role-based access control
+- Notifications and tracking APIs
+- Customer feedback, support, quality/inspection and multilingual modules
+- MySQL schema plus local setup/sample-data scripts
 
 ## Project structure
 
-The main source lives under:
+The application source is under:
 
 `SmartBaggageTracking/SmartBaggageTrackingSystem_Pro/`
 
-Key components include:
+Important directories:
 
-- `baggage/` — baggage registration, search, status, reports, and tracking.
-- `admin/` — administration dashboard, analytics, settings, users, audit, and backup pages.
-- `includes/` — configuration, PDO database access, authentication, shared helpers, staff configuration, validation, and role protection.
-- `includes/security/role_guard.php` — centralized role/page access rules.
-- `schema.sql` — the recovered MySQL schema and initial sample data from the original project archive.
-- `check_runtime.php` — read-only prerequisite checker.
+- `passenger/` — passenger dashboard, tracking, flight information and history
+- `staff/` — staff dashboard, baggage registration/search, tracking updates and reports
+- `baggage/` — baggage registration, status, tracking and reporting workflows
+- `flights/` — flight status/schedule/management
+- `admin/` — administration, analytics, settings, users, audit and backup
+- `includes/` — database, authentication, validation, shared helpers, APIs and role protection
+- `support/`, `crm/`, `quality/`, `maps/`, `multilingual/` — supporting system modules
+- `schema.sql` — recovered MySQL schema and sample records
 
-## Recovered source
+## Restored archive
 
-The original project archive was recovered and the core files that were previously missing from this repository were restored, including:
+The repository originally contained only a partial snapshot. The available project archive was used to restore the missing application structure and core dependencies. Previously missing items such as the `includes` layer, database schema, passenger/staff pages, APIs and supporting modules are now present.
 
-- `includes/config.php`
-- `includes/database.php`
-- `includes/auth.php`
-- `includes/functions.php`
-- `includes/security/role_guard.php`
-- `includes/config_staff.php`
-- `includes/security.php`
-- `includes/validation.php`
-- `includes/logout.php`
-- `schema.sql`
+A few archive artifacts were intentionally **not** restored because they do not belong in a clean source repository: the bundled `cloudflared` Windows executable, debug scratch files, a redundant legacy SQL dump, zero-byte vendor JavaScript files, and placeholder image files. CDN versions are used where appropriate for frontend libraries.
 
-The restored configuration contains local development defaults only; database and SMTP passwords are blank.
+Existing demo accounts/passwords and the project's original local-development credential assumptions were not changed as part of the restoration.
 
 ## Local requirements
 
-- PHP with PDO and `pdo_mysql`
+- PHP 8+ with PDO and `pdo_mysql`
 - MySQL/MariaDB
-- A local web server such as Apache/XAMPP or PHP's development server
+- Apache/XAMPP or another PHP-capable local web server
 
-Run the repository checker from the repository root:
+The default local database configuration expects:
+
+- database: `smart_baggage_pro`
+- host: `localhost`
+- user: `root`
+- password: blank
+
+Import `schema.sql`, or review the included local setup scripts before using them.
+
+From the repository root, the read-only prerequisite checker can be run with:
 
 ```bash
 php check_runtime.php
 ```
 
-The checker verifies the core source files and PHP PDO/MySQL extensions. A successful prerequisite check does **not** by itself prove that every page, database query, or role workflow works end-to-end.
+## Validation status
 
-## Database
+The recovered archive's PHP source was syntax-checked during restoration. Core runtime dependencies and include paths were also reviewed. A complete MySQL end-to-end workflow still requires a local environment with `pdo_mysql` and a running MySQL/MariaDB server.
 
-`schema.sql` contains the original recovered MySQL-compatible schema, relationships, indexes, sample records, and baggage-status trigger. Review sample data before using it outside a local development environment.
+For a full integration check, validate this sequence locally:
 
-## Current validation status
+1. Import the schema into a clean database.
+2. Log in using the existing demo accounts.
+3. Register baggage as staff.
+4. Update baggage status/location.
+5. Confirm the passenger can view tracking/history.
+6. Verify role restrictions for staff/admin/passenger pages.
 
-The recovered PHP include files pass PHP syntax lint. In the current audit environment, the remaining environment-level blocker is the missing `pdo_mysql` PHP extension, so a full MySQL integration test could not be completed there.
+## Security maintenance performed
 
-Further validation should cover:
-
-1. Schema import into a clean MySQL/MariaDB instance.
-2. Passenger registration and login.
-3. Staff baggage registration/search/status updates.
-4. Passenger tracking/history views.
-5. Admin role restrictions and destructive actions.
-6. CSRF/session/security review before any public deployment.
+Without changing account passwords or core role behavior, the restored code includes safer prepared queries in the baggage-registration lookup flow, improved session cleanup, and restored role/check-in helper dependencies.
 
 ## Portfolio note
 
-This repository represents a university/co-op web-system project and should be presented as a prototype, not as a production airport system. The restored source improves reproducibility, while full end-to-end deployment validation remains future work.
+This repository is a university/co-op prototype demonstrating PHP/MySQL full-stack development, role-based workflows, operational dashboards and baggage-tracking concepts. It should not be represented as a production airport system without further integration, deployment and security testing.
