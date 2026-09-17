@@ -1,0 +1,1 @@
+<?php require_once 'tracking_update_simple.php'; ?>
